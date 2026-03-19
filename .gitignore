@@ -1,0 +1,46 @@
+############################################################
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.venv/
+
+# Environment & secrets
+.env
+.env.local
+.env.*
+
+# Build & tooling caches
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+
+# Node / Expo (App workspace)
+node_modules/
+App/node_modules/
+App/.expo/
+App/.expo-shared/
+App/dist/
+App/web-build/
+
+# Logs & misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS noise
+.DS_Store
+Thumbs.db
