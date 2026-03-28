@@ -10,10 +10,10 @@ from sqlalchemy.orm import Session
 from backend.core.config import get_settings
 from backend.core.database import get_db
 from backend.models import User
-from backend.services.auth import get_user_by_id
 
 settings = get_settings()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use bcrypt_sha256 to avoid 72-byte bcrypt password limit
+pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
@@ -42,9 +42,15 @@ def decode_token(token: str) -> dict:
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], db: Annotated[Session, Depends(get_db)]
 ) -> User:
+    from backend.services.auth import get_user_by_id  # local import to avoid circular dependency
+
     payload = decode_token(token)
-    user_id: Optional[int] = payload.get("sub")  # type: ignore[assignment]
-    if user_id is None:
+    raw_sub: Optional[str | int] = payload.get("sub")
+    if raw_sub is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
+    try:
+        user_id = int(raw_sub)
+    except (TypeError, ValueError):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     user = get_user_by_id(db, user_id)
     if not user:

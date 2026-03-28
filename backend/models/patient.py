@@ -23,6 +23,6 @@ class Patient(Base):
     updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="patient")
-    insurance: Mapped["Insurance" | None] = relationship(back_populates="patients")
+    insurance: Mapped["Insurance | None"] = relationship(back_populates="patients")
     appointments: Mapped[list["Appointment"]] = relationship(back_populates="patient", cascade="all, delete-orphan")
     triage_logs: Mapped[list["TriageLog"]] = relationship(back_populates="patient", cascade="all, delete-orphan")

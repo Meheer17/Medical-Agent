@@ -2,11 +2,12 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from backend.tools.api_tools import ToolingConfig, analyze_symptoms_tool
+from backend.tools.api_tools import ToolingConfig, make_analyze_symptoms_tool
 
 
 def build_triage_agent(llm, base_url: str, token: str | None = None) -> AgentExecutor:
-    tools = [analyze_symptoms_tool.bind(ToolingConfig(base_url, token))]
+    config = ToolingConfig(base_url, token)
+    tools = [make_analyze_symptoms_tool(config)]
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", "You collect symptoms and classify urgency."),

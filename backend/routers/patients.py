@@ -11,6 +11,20 @@ from backend.schemas.patient import PatientResponse, PatientUpdate
 router = APIRouter(prefix="/patients", tags=["patients"])
 
 
+@router.get("/me", response_model=PatientResponse)
+def get_my_patient_profile(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[User, Depends(get_current_user)],
+):
+    if user.role != UserRole.PATIENT:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Patient profile is only available for patient accounts")
+
+    patient = db.query(Patient).filter(Patient.user_id == user.id).first()
+    if not patient:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Patient profile missing")
+    return patient
+
+
 @router.get("/{patient_id}", response_model=PatientResponse)
 def get_patient(patient_id: int, db: Annotated[Session, Depends(get_db)], user: Annotated[User, Depends(get_current_user)]):
     patient = db.query(Patient).filter(Patient.id == patient_id).first()

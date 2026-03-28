@@ -17,8 +17,11 @@ class TokenData(BaseModel):
 
 class SignUpRequest(BaseModel):
     email: EmailStr
-    password: str = Field(min_length=8)
+    password: str = Field(min_length=8, max_length=128)
     full_name: str
+    role: UserRole = UserRole.PATIENT
+    specialty: Optional[str] = None
+    location: Optional[str] = None
 
 
 class LoginRequest(BaseModel):

@@ -2,13 +2,14 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from backend.tools.api_tools import ToolingConfig, get_patient_data_tool, verify_identity_tool
+from backend.tools.api_tools import ToolingConfig, make_get_patient_data_tool, make_verify_identity_tool
 
 
 def build_identity_agent(llm, base_url: str, token: str | None = None) -> AgentExecutor:
+    config = ToolingConfig(base_url, token)
     tools = [
-        verify_identity_tool.bind(ToolingConfig(base_url, token)),
-        get_patient_data_tool.bind(ToolingConfig(base_url, token)),
+        make_verify_identity_tool(config),
+        make_get_patient_data_tool(config),
     ]
     prompt = ChatPromptTemplate.from_messages(
         [

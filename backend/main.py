@@ -13,6 +13,7 @@ from backend.routers.triage import router as triage_router
 from backend.routers.doctors import router as doctors_router
 from backend.routers.insurance import router as insurance_router
 from backend.routers.appointments import router as appointments_router
+from backend.routers.chat import router as chat_router
 
 settings = get_settings()
 configure_logging()
@@ -20,7 +21,7 @@ logger = get_logger(__name__)
 
 
 @asynccontextmanager
-def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI):
     logger.info("Starting application", extra={"env": settings.environment})
     Base.metadata.create_all(engine)
     app.state.llm_provider = build_llm_provider(settings)
@@ -42,6 +43,7 @@ app.include_router(triage_router)
 app.include_router(doctors_router)
 app.include_router(insurance_router)
 app.include_router(appointments_router)
+app.include_router(chat_router)
 
 
 @app.get("/", summary="Root")

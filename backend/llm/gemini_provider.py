@@ -9,10 +9,10 @@ from backend.llm.base import BaseLLMProvider, ensure_messages
 class GeminiProvider(BaseLLMProvider):
     def __init__(self, api_key: str, model: str = "gemini-pro", timeout_seconds: int = 60) -> None:
         if not api_key:
-            raise ValueError("GEMINI_API_KEY is required for GeminiProvider")
+            raise ValueError("GOOGLE_API_KEY is required for GeminiProvider")
         self.client = ChatGoogleGenerativeAI(
             model=model,
-            api_key=api_key,
+            google_api_key=api_key,
             temperature=0.2,
             max_output_tokens=1024,
             convert_system_message_to_human=True,
